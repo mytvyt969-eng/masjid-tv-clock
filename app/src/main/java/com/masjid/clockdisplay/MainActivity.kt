@@ -547,17 +547,27 @@ fun SettingsOverlay(
                 Spacer(modifier = Modifier.height(14.dp))
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Countdown Window:", color = TextWhite, fontSize = 14.sp)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Button(
-                            onClick = { if (countdownMinutes > 1) onCountdownChange(countdownMinutes - 1) },
-                            colors = ButtonDefaults.buttonColors(containerColor = CardBg)
-                        ) { Text("-", color = TextWhite) }
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically
+) {
+    Text("Countdown Window:", color = TextWhite, fontSize = 14.sp)
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Button(
+            onClick = { if (countdownMinutes > 1) onCountDownChange(countdownMinutes - 1) },
+            colors = ButtonDefaults.buttonColors(containerColor = CardBg)
+        ) { Text("-", color = TextWhite) }
 
-                        Text(" $countdownMinutes Min ", color = GoldAccent, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.width(8.dp))
 
-                        Butt
+        Text("$countdownMinutes Min", color = GoldAccent, fontWeight = FontWeight.Bold)
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Button(
+            onClick = { onCountDownChange(countdownMinutes + 1) },
+            colors = ButtonDefaults.buttonColors(containerColor = CardBg)
+        ) { Text("+", color = TextWhite) }
+    }
+                }
+                
