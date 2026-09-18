@@ -36,6 +36,7 @@ import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -559,5 +560,4 @@ fun SettingsOverlay(
 
                         Text(" $countdownMinutes Min ", color = GoldAccent, fontWeight = FontWeight.Bold)
 
-                        Button(
-                  
+                        Butt
