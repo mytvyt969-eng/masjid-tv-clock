@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Masjid TV Clock"
 include(":app")
+
