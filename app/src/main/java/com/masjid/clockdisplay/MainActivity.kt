@@ -547,27 +547,324 @@ fun SettingsOverlay(
                 Spacer(modifier = Modifier.height(14.dp))
 
                 Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically
-) {
-    Text("Countdown Window:", color = TextWhite, fontSize = 14.sp)
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Button(
-            onClick = { if (countdownMinutes > 1) onCountDownChange(countdownMinutes - 1) },
-            colors = ButtonDefaults.buttonColors(containerColor = CardBg)
-        ) { Text("-", color = TextWhite) }
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Countdown Window:", color = TextWhite, fontSize = 14.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Button(
+                            onClick = { if (countdownMinutes > 1) onCountdownChange(countdownMinutes - 1) },
+                            colors = ButtonDefaults.buttonColors(containerColor = CardBg)
+                        ) { Text("-", color = TextWhite) }
 
-        Spacer(modifier = Modifier.width(8.dp))
+                        Text(" $countdownMinutes Min ", color = GoldAccent, fontWeight = FontWeight.Bold)
 
-        Text("$countdownMinutes Min", color = GoldAccent, fontWeight = FontWeight.Bold)
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Button(
-            onClick = { onCountDownChange(countdownMinutes + 1) },
-            colors = ButtonDefaults.buttonColors(containerColor = CardBg)
-        ) { Text("+", color = TextWhite) }
-    }
+                        Button(
+                            onClick = { if (countdownMinutes < 15) onCountdownChange(countdownMinutes + 1) },
+                            colors = ButtonDefaults.buttonColors(containerColor = CardBg)
+                        ) { Text("+", color = TextWhite) }
+                    }
                 }
-                
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Athan/Jamaat Alert Sound:", color = TextWhite, fontSize = 14.sp)
+                    Switch(checked = audioEnabled, onCheckedChange = onAudioToggle)
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Button(
+                    onClick = onClose,
+                    colors = ButtonDefaults.buttonColors(containerColor = GoldAccent)
+                ) {
+                    Text("SAVE & CLOSE", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+fun generateUpiQrBitmap(upiId: String): Bitmap? {
+    return try {
+        val uri = "upi://pay?pa=$upiId&pn=Jama%20Masjid&cu=INR"
+        val writer = QRCodeWriter()
+        val bitMatrix = writer.encode(uri, BarcodeFormat.QR_CODE, 300, 300)
+        val width = bitMatrix.width
+        val height = bitMatrix.height
+        val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                bmp.setPixel(x, y, if (bitMatrix.get(x, y)) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+            }
+        }
+        bmp
+    } catch (e: Exception) {
+        null
+    }
+}
+
+fun playAudioAlert(context: Context) {
+    try {
+        val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val r = RingtoneManager.getRingtone(context, notification)
+        r.play()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+@Composable
+fun HeaderSection(formattedDate: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color(0xFFE2ECE5), Color(0xFFB5C9BC))
+                )
+            )
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "🕌 ", fontSize = 24.sp)
+            Column {
+                Text(
+                    text = "JAMA MASJID KODWATAND, LALPANIA",
+                    color = Color(0xFF091C13),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Text(
+                    text = "BOKARO, JHARKHAND",
+                    color = Color(0xFF2A4738),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "🌅 ", fontSize = 20.sp)
+            Column {
+                Text(text = "Sunrise", color = Color(0xFF2A4738), fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                Text(text = "05:34 AM", color = Color(0xFF091C13), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Box(modifier = Modifier.width(1.dp).height(30.dp).background(Color(0xFF8BA594)))
+            Spacer(modifier = Modifier.width(20.dp))
+            Column(horizontalAlignment = Alignment.End) {
+                Text(text = "Rabi' al-Thani 4, 1448 AH", color = Color(0xFF091C13), fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
+                Text(text = formattedDate, color = Color(0xFF2A4738), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+            }
+        }
+    }
+}
+
+@Composable
+fun JumuahCard(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxHeight()
+            .clip(RoundedCornerShape(16.dp))
+            .background(CardBg)
+            .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("📋 ", fontSize = 18.sp)
+            Text("Jumu'ah", color = TextWhite, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.weight(1f))
+            Text("🕌", fontSize = 16.sp)
+        }
+        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(CardBorder))
+        PrayerTimeDetail("Athan", "12:15 PM")
+        PrayerTimeDetail("Jamaat", "01:00 PM")
+        PrayerTimeDetail("Khutba", "01:00 PM")
+    }
+}
+
+@Composable
+fun PrayerTimeDetail(label: String, time: String) {
+    Column {
+        Text(text = label, color = TextMuted, fontSize = 12.sp)
+        Text(text = time, color = TextWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+fun PrayerTimesRow(modifier: Modifier = Modifier) {
+    val prayers = listOf(
+        PrayerTime("🌤️", "Fajr", "04:30 AM", "05:00 AM"),
+        PrayerTime("☀️", "Dhuhr", "01:00 PM", "01:15 PM"),
+        PrayerTime("⛅", "Asr", "04:15 PM", "04:30 PM", isActive = true),
+        PrayerTime("📖", "Maghrib", "05:55 PM", "05:58 PM"),
+        PrayerTime("🌙", "Isha", "07:45 PM", "08:00 PM")
+    )
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        prayers.forEach { prayer ->
+            PrayerCard(prayer = prayer, modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+fun PrayerCard(prayer: PrayerTime, modifier: Modifier = Modifier) {
+    val borderColor by animateColorAsState(
+        targetValue = if (prayer.isActive) ActiveBorder else CardBorder, label = "borderAnim"
+    )
+
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(if (prayer.isActive) Color(0x33FFD700) else CardBg)
+            .border(if (prayer.isActive) 2.dp else 1.dp, borderColor, RoundedCornerShape(14.dp))
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(prayer.icon, fontSize = 16.sp)
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = prayer.name, color = TextWhite, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(CardBorder))
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(text = "Athan", color = TextMuted, fontSize = 11.sp)
+        Text(text = prayer.athan, color = TextWhite, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(text = "Jamaat", color = TextMuted, fontSize = 11.sp)
+        Text(
+            text = prayer.jamaat,
+            color = if (prayer.isActive) ActiveBorder else TextWhite,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.ExtraBold
+        )
+    }
+}
+
+@Composable
+fun BottomTickerSection() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(CardBg)
+            .border(1.dp, CardBorder, RoundedCornerShape(10.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "📖  “And establish prayer and give zakah, and bow with those who bow [in worship and obedience].” — Surah Al-Baqarah (2:43)",
+            color = TextWhite,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = "🔊 Keep Our Masjid Clean For A Better Tomorrow",
+            color = GoldAccent,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+fun ModernAnalogClock(currentTime: Calendar, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val center = Offset(size.width / 2, size.height / 2)
+        val radius = size.minDimension / 2
+
+        drawCircle(
+            brush = Brush.sweepGradient(
+                colors = listOf(MetallicRingOuter, MetallicRingInner, MetallicRingOuter)
+            ),
+            radius = radius,
+            center = center,
+            style = Stroke(width = 10.dp.toPx())
+        )
+
+        drawCircle(
+            color = Color(0xFF091C13),
+            radius = radius - 5.dp.toPx(),
+            center = center
+        )
+
+        for (i in 1..12) {
+            val angle = (i * 30 - 90) * (PI / 180.0)
+            val isMainTick = i % 3 == 0
+            val tickLength = if (isMainTick) 14.dp.toPx() else 8.dp.toPx()
+
+            val startX = center.x + (radius - 20.dp.toPx()) * cos(angle).toFloat()
+            val startY = center.y + (radius - 20.dp.toPx()) * sin(angle).toFloat()
+            val endX = center.x + (radius - (20.dp.toPx() + tickLength)) * cos(angle).toFloat()
+            val endY = center.y + (radius - (20.dp.toPx() + tickLength)) * sin(angle).toFloat()
+
+            drawLine(
+                color = GoldAccent,
+                start = Offset(startX, startY),
+                end = Offset(endX, endY),
+                strokeWidth = if (isMainTick) 4.dp.toPx() else 2.dp.toPx()
+            )
+        }
+
+        val hour = currentTime.get(Calendar.HOUR)
+        val minute = currentTime.get(Calendar.MINUTE)
+        val second = currentTime.get(Calendar.SECOND)
+
+        val hourAngle = ((hour + minute / 60.0) * 30 - 90) * (PI / 180.0)
+        drawLine(
+            color = Color.White,
+            start = center,
+            end = Offset(
+                center.x + (radius * 0.45f) * cos(hourAngle).toFloat(),
+                center.y + (radius * 0.45f) * sin(hourAngle).toFloat()
+            ),
+            strokeWidth = 6.dp.toPx()
+        )
+
+        val minuteAngle = ((minute + second / 60.0) * 6 - 90) * (PI / 180.0)
+        drawLine(
+            color = GoldAccent,
+            start = center,
+            end = Offset(
+                center.x + (radius * 0.65f) * cos(minuteAngle).toFloat(),
+                center.y + (radius * 0.65f) * sin(minuteAngle).toFloat()
+            ),
+            strokeWidth = 4.dp.toPx()
+        )
+
+        val secondAngle = (second * 6 - 90) * (PI / 180.0)
+        drawLine(
+            color = Color.Red,
+            start = center,
+            end = Offset(
+                center.x + (radius * 0.75f) * cos(secondAngle).toFloat(),
+                center.y + (radius * 0.75f) * sin(secondAngle).toFloat()
+            ),
+            strokeWidth = 2.dp.toPx()
+        )
+
+        drawCircle(color = GoldAccent, radius = 6.dp.toPx(), center = center)
+    }
+}
