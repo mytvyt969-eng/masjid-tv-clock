@@ -39,7 +39,6 @@ import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -900,7 +899,7 @@ fun ModernAnalogClock(currentTime: Calendar, modifier: Modifier = Modifier) {
         )
 
         for (i in 1..12) {
-            val angle = (i * 30 - 90) * (PI / 180.0)
+            val angle = Math.toRadians((i * 30 - 90).toDouble())
             val isMainTick = i % 3 == 0
             val tickLength = if (isMainTick) 14.dp.toPx() else 8.dp.toPx()
 
@@ -921,7 +920,7 @@ fun ModernAnalogClock(currentTime: Calendar, modifier: Modifier = Modifier) {
         val minute = currentTime.get(Calendar.MINUTE)
         val second = currentTime.get(Calendar.SECOND)
 
-        val hourAngle = ((hour + minute / 60.0) * 30 - 90) * (PI / 180.0)
+        val hourAngle = Math.toRadians(((hour + minute / 60.0) * 30.0 - 90.0))
         drawLine(
             color = Color.White,
             start = center,
@@ -932,7 +931,7 @@ fun ModernAnalogClock(currentTime: Calendar, modifier: Modifier = Modifier) {
             strokeWidth = 6.dp.toPx()
         )
 
-        val minuteAngle = ((minute + second / 60.0) * 6 - 90) * (PI / 180.0)
+        val minuteAngle = Math.toRadians(((minute + second / 60.0) * 6.0 - 90.0))
         drawLine(
             color = GoldAccent,
             start = center,
@@ -943,7 +942,7 @@ fun ModernAnalogClock(currentTime: Calendar, modifier: Modifier = Modifier) {
             strokeWidth = 4.dp.toPx()
         )
 
-        val secondAngle = (second * 6 - 90) * (PI / 180.0)
+        val secondAngle = Math.toRadians((second * 6.0 - 90.0))
         drawLine(
             color = Color.Red,
             start = center,
