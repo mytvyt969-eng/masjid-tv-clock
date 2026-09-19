@@ -25,10 +25,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -93,7 +94,6 @@ fun MasjidApp(showSettings: MutableState<Boolean>) {
     var countdownMinutesTrigger by remember { mutableIntStateOf(prefs.getInt("cd_minutes", 3)) }
     var audioAlertEnabled by remember { mutableStateOf(prefs.getBoolean("audio_alert", true)) }
 
-    // Prayer Times State
     var fajrAthan by remember { mutableStateOf(prefs.getString("fajr_athan", "04:30 AM") ?: "04:30 AM") }
     var fajrJamaat by remember { mutableStateOf(prefs.getString("fajr_jamaat", "05:00 AM") ?: "05:00 AM") }
 
@@ -218,50 +218,26 @@ fun MainDashboardScreen(
     jumuahJamaat: String,
     currentJamaatTime: String
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0F3223),
-                        Color(0xFF092218),
-                        Color(0xFF04120C)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.masjid_bg),
+            contentDescription = "Masjid Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.35f),
+                            Color.Black.copy(alpha = 0.55f)
+                        )
                     )
                 )
-            )
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val w = size.width
-            val h = size.height
-            val colorSil = Color(0x1F00331A)
-
-            drawCircle(
-                color = colorSil,
-                radius = w * 0.22f,
-                center = Offset(w * 0.5f, h * 0.55f)
-            )
-
-            val minaretPathRight = Path().apply {
-                moveTo(w * 0.78f, h)
-                lineTo(w * 0.78f, h * 0.35f)
-                lineTo(w * 0.79f, h * 0.28f)
-                lineTo(w * 0.80f, h * 0.35f)
-                lineTo(w * 0.80f, h)
-                close()
-            }
-            drawPath(path = minaretPathRight, color = colorSil)
-
-            val minaretPathLeft = Path().apply {
-                moveTo(w * 0.22f, h)
-                lineTo(w * 0.22f, h * 0.38f)
-                lineTo(w * 0.225f, h * 0.30f)
-                lineTo(w * 0.23f, h * 0.38f)
-                lineTo(w * 0.23f, h)
-                close()
-            }
-            drawPath(path = minaretPathLeft, color = colorSil)
-        }
+        )
 
         Column(
             modifier = Modifier
