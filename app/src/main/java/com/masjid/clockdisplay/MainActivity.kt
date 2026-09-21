@@ -35,8 +35,8 @@ import kotlin.math.sin
 
 private val White = Color.White
 private val Muted = Color(0xCCFFFFFF)
-private val Glass = Color(0x8A06274A)
-private val Border = Color(0x55FFFFFF)
+private val Glass = Color(0xD40A2C50)
+private val Border = Color(0x66BDE7FF)
 private val Gold = Color(0xFFFFD54F)
 
 private data class Prayer(val name:String,val icon:String,val athan:String,val jamaat:String,val minutes:Int)
@@ -89,7 +89,7 @@ class MainActivity:ComponentActivity(){
 @Composable private fun Header(date:String,hijri:String){
     Row(Modifier.fillMaxWidth(),Arrangement.SpaceBetween,Alignment.CenterVertically){
         Row(verticalAlignment=Alignment.CenterVertically){Text("🕌",fontSize=44.sp);Spacer(Modifier.width(12.dp));Column{Text("Jama Masjid KODWATAND, Lalpania",color=White,fontSize=25.sp,fontWeight=FontWeight.ExtraBold);Text("Bokaro, Jharkhand, India",color=White.copy(.92f),fontSize=16.sp)}}
-        Column(horizontalAlignment=Alignment.End){Text(date,color=White,fontSize=20.sp,fontWeight=FontWeight.Bold);Text(hijri,color=White.copy(.9f),fontSize=15.sp)}
+        Row(verticalAlignment=Alignment.CenterVertically){Column(horizontalAlignment=Alignment.End){Text(date,color=White,fontSize=20.sp,fontWeight=FontWeight.Bold);Text(hijri,color=White.copy(.9f),fontSize=15.sp)};Spacer(Modifier.width(26.dp));Column(horizontalAlignment=Alignment.CenterHorizontally){Text("☁️  26°C",color=White,fontSize=19.sp,fontWeight=FontWeight.Bold);Text("Cloudy   H:31°  L:25°",color=Muted,fontSize=12.sp)}}
     }
 }
 @Composable private fun Glass(modifier:Modifier,content:@Composable ColumnScope.()->Unit){
@@ -139,16 +139,18 @@ class MainActivity:ComponentActivity(){
     Row(modifier,horizontalArrangement=Arrangement.spacedBy(12.dp)){ps.forEach{p->val active=when(period){PrayerPeriod.FAJR->p.name=="Fajr";PrayerPeriod.DHUHR->p.name=="Dhuhr";PrayerPeriod.ASR->p.name=="Asr";PrayerPeriod.MAGHRIB->p.name=="Maghrib";PrayerPeriod.ISHA->p.name=="Isha"};PrayerTile(p,active,theme,Modifier.weight(1f))}}
 }
 @Composable private fun PrayerTile(p:Prayer,active:Boolean,theme:ThemePalette,modifier:Modifier){
-    val bc by animateColorAsState(if(active)theme.accent else Color(0x663A516B),label="active")
-    Column(modifier.clip(RoundedCornerShape(20.dp)).background(if(active)theme.activeBg.copy(.82f) else Color(0xDDF2F4F7)).border(if(active)2.dp else 1.dp,bc,RoundedCornerShape(20.dp)).padding(horizontal=12.dp,vertical=10.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.SpaceEvenly){
-        Row(verticalAlignment=Alignment.CenterVertically){Text(p.icon,color=if(active)theme.accent else Color(0xFFFFC928),fontSize=25.sp);Spacer(Modifier.width(7.dp));Text(p.name,color=if(active)White else Color(0xFF17233A),fontSize=23.sp,fontWeight=FontWeight.ExtraBold)}
-        Text("Adhan",color=if(active)Muted else Color(0xFF26364D),fontSize=14.sp);Text(p.athan,color=if(active)White else Color(0xFF17233A),fontSize=20.sp,fontWeight=FontWeight.ExtraBold)
-        Box(Modifier.width(80.dp).height(1.dp).background(if(active)Border else Color(0x55203045)))
-        Text("Iqamah",color=if(active)Muted else Color(0xFF26364D),fontSize=14.sp);Text(p.jamaat,color=if(active)White else Color(0xFF17233A),fontSize=20.sp,fontWeight=FontWeight.ExtraBold)
+    val bc by animateColorAsState(if(active)Color(0xFF38C8FF) else Color(0x6689D7FF),label="active")
+    val bg = if(active) Color(0xD90B4D82) else Color(0xD9163A5D)
+    val glow = if(active) theme.accent else Color.Transparent
+    Column(modifier.clip(RoundedCornerShape(20.dp)).background(bg).border(if(active)2.dp else 1.dp,bc,RoundedCornerShape(20.dp)).padding(horizontal=12.dp,vertical=10.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.SpaceEvenly){
+        Row(verticalAlignment=Alignment.CenterVertically){Text(p.icon,color=if(p.name=="Isha"&&active)White else Color(0xFFFFD02E),fontSize=25.sp);Spacer(Modifier.width(7.dp));Text(p.name,color=White,fontSize=23.sp,fontWeight=FontWeight.ExtraBold)}
+        Text("Adhan",color=Muted,fontSize=14.sp);Text(p.athan,color=White,fontSize=20.sp,fontWeight=FontWeight.ExtraBold)
+        Box(Modifier.width(80.dp).height(1.dp).background(Border))
+        Text("Iqamah",color=Muted,fontSize=14.sp);Text(p.jamaat,color=White,fontSize=20.sp,fontWeight=FontWeight.ExtraBold)
     }
 }
 @Composable private fun Footer(){
     Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Color(0x9A061B32)).border(1.dp,Border,RoundedCornerShape(10.dp)).padding(horizontal=16.dp,vertical=9.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){
-        Text("🔊",fontSize=23.sp);Text("Welcome to Jama Masjid KODWATAND, Lalpania",color=White,fontSize=14.sp);Text("|",color=Muted,fontSize=17.sp);Text("May Allah accept our prayers",color=White,fontSize=14.sp);Text("|",color=Muted,fontSize=17.sp);Text("Stay connected with our community",color=White,fontSize=14.sp)
+        Text("🔊",fontSize=23.sp);Text("Welcome to Jama Masjid KODWATAND, Lalpania",color=White,fontSize=14.sp);Text("|",color=Muted,fontSize=17.sp);Text("May Allah accept our prayers",color=White,fontSize=14.sp);Text("|",color=Muted,fontSize=17.sp);Text("Stay connected with our community",color=White,fontSize=14.sp);Text("LIVE",color=Muted,fontSize=13.sp,fontWeight=FontWeight.Bold)
     }
 }
