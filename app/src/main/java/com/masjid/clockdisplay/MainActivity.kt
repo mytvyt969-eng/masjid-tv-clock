@@ -35,8 +35,8 @@ import kotlin.math.sin
 
 private val White = Color.White
 private val Muted = Color(0xCCFFFFFF)
-private val Glass = Color(0xCC0A3158)
-private val Border = Color(0x66B9E6FF)
+private val Glass = Color(0xA80A3158)
+private val Border = Color(0x668ED7FF)
 private val Gold = Color(0xFFFFD54F)
 
 private data class Prayer(val name:String,val icon:String,val athan:String,val jamaat:String,val minutes:Int)
@@ -72,7 +72,7 @@ class MainActivity:ComponentActivity(){
     val period=periodFor(now,ps);val theme=palette(period);val np=nextPrayer(ps,now);val date=SimpleDateFormat("EEE, dd MMM yyyy",Locale.getDefault()).format(now.time)
     Box(Modifier.fillMaxSize()){
         Image(painterResource(R.drawable.masjid_bg),null,Modifier.fillMaxSize(),contentScale=ContentScale.Crop)
-        Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(theme.top.copy(.60f),theme.middle.copy(.48f),theme.bottom.copy(.78f)))))
+        Box(Modifier.fillMaxSize().background(Color(0x52001836)))
         Column(Modifier.fillMaxSize().padding(horizontal=28.dp,vertical=20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
             Header(date,"29 Rabi' al-Awwal 1448 AH")
             Row(Modifier.fillMaxWidth().weight(1f),horizontalArrangement=Arrangement.spacedBy(14.dp)){
@@ -107,7 +107,7 @@ class MainActivity:ComponentActivity(){
 }
 @Composable private fun CenterPanel(modifier:Modifier,now:Calendar,next:Prayer,cd:String,theme:ThemePalette){
     Box(modifier.fillMaxHeight()){
-        Box(Modifier.fillMaxSize().padding(start=82.dp).clip(RoundedCornerShape(22.dp)).background(Color(0xCC0A3158)).border(1.dp,Border,RoundedCornerShape(22.dp))){
+        Box(Modifier.fillMaxSize().padding(start=82.dp).clip(RoundedCornerShape(22.dp)).background(Color(0x990A3158)).border(1.dp,Border,RoundedCornerShape(22.dp))){
             Row(Modifier.fillMaxSize().padding(start=105.dp,end=24.dp),verticalAlignment=Alignment.CenterVertically){
                 Column(Modifier.weight(1f),horizontalAlignment=Alignment.CenterHorizontally){
                     Row(verticalAlignment=Alignment.CenterVertically){Text(if(next.name=="Isha")"☾" else "🌅",color=theme.accent,fontSize=38.sp);Spacer(Modifier.width(12.dp));Column{Text("Next Prayer",color=Muted,fontSize=18.sp);Text(next.name,color=White,fontSize=35.sp,fontWeight=FontWeight.ExtraBold)}}
@@ -140,10 +140,10 @@ class MainActivity:ComponentActivity(){
 }
 @Composable private fun PrayerTile(p:Prayer,active:Boolean,theme:ThemePalette,modifier:Modifier){
     val borderColor by animateColorAsState(
-        if(active) Color(0xFF39D5FF) else Color(0x668FD9FF),
+        if(active) Color(0xFF37D7FF) else Color(0x6685CFF0),
         label="prayerBorder"
     )
-    val tileBg = if(active) Color(0xD9135A91) else Color(0xCC0C3558)
+    val tileBg = if(active) Color(0xB51A5682) else Color(0x8F0B3152)
     Column(
         modifier
             .clip(RoundedCornerShape(20.dp))
@@ -171,7 +171,7 @@ class MainActivity:ComponentActivity(){
 }
 
 @Composable private fun Footer(){
-    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Color(0xD90A223C)).border(1.dp,Border,RoundedCornerShape(10.dp)).padding(horizontal=16.dp,vertical=9.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){
+    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Color(0xB80A223C)).border(1.dp,Border,RoundedCornerShape(10.dp)).padding(horizontal=16.dp,vertical=9.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){
         Text("🔊",fontSize=23.sp);Text("Welcome to Jama Masjid KODWATAND, Lalpania",color=White,fontSize=14.sp);Text("|",color=Muted,fontSize=17.sp);Text("May Allah accept our prayers",color=White,fontSize=14.sp);Text("|",color=Muted,fontSize=17.sp);Text("Stay connected with our community",color=White,fontSize=14.sp);Text("LIVE",color=Muted,fontSize=13.sp,fontWeight=FontWeight.Bold)
     }
 }
